@@ -23,14 +23,9 @@ done
 OS=$(uname)
 ARCH=$(uname -m)
 HOST=$( hostname )
-export PATH="${HOME}/usr/local/bin:${HOME}/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:${PATH}"
-if [ -n "${OS}" ] && [ -n "${ARCH}" ] && [ -e "${HOME}/usr/bin.${OS}.${ARCH}" ]; then
-	PATH="${HOME}/usr/bin.${OS}.${ARCH}:${PATH}"
-	LD_LIBRARY_PATH="${HOME}/usr/local/lib.${OS}.${ARCH}:${HOME}/usr/lib/.${OS}.${ARCH}"
-	export OS ARCH HOST LD_LIBRARY_PATH PATH
-else
-	echo "ERROR: local binarch missing, looking for usr/bin.${OS}.${ARCH}:${PATH}" 
-fi
+export PATH="$( "${HOME}/usr/bin/mypaths.sh" )"
+LD_LIBRARY_PATH="${HOME}/usr/local/lib.${OS}.${ARCH}:${HOME}/usr/lib/.${OS}.${ARCH}"
+export OS ARCH HOST LD_LIBRARY_PATH PATH
 if [ -d "${HOME}/usr/tmp" ]; then
 	export TMP="${HOME}/usr/tmp/"
 elif [ -d "/tmp" ]; then
@@ -66,15 +61,6 @@ xmodmap ~/.Xmodmap
 if [ -e "${HOME}/.xbindkeysrc" ]; then
 	xbindkeys
 fi
-case "$(hostname)" in 
-	baymax)
-		xbacklight -set 30 
-		;;
-	eddie)
-		xbacklight -set xxi2530 
-		;;
-esac
-
 if command -v google-chrome-stable; then
 	export BROWSER="$( command -v google-chrome-stable )"
 	xdg-settings set default-web-browser google-chrome.desktop
@@ -119,8 +105,8 @@ do.svscan.sh  &>> "${HOME}/usr/local/var/log/svscan.log" &
 #Run location dependant settings
 "${HOME}/usr/bin/loc_settings" &>> "${HOME}/usr/local/var/log/loc.log" &
 
-if [ -x /home/fred4/usr/local/bin/repa.sh ]; then
-	/home/fred4/usr/local/bin/repa.sh &
+if [ -x "${HOME}/usr/local/bin/repa.sh" ]; then
+	"${HOME}/usr/local/bin/repa.sh" &
 fi
 
 #Export the enviroment for other scripts to use
