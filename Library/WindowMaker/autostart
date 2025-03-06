@@ -1,0 +1,130 @@
+#!/bin/bash --norc
+
+set -x
+
+if [ -e "${HOME}/usr/local/var/log/windowmaker.log" ]; then
+	mv -f "${HOME}/usr/local/var/log/windowmaker.log" "${HOME}/usr/local/var/log/windowmaker.log.old"
+fi
+
+exec > "${HOME}/usr/local/var/log/windowmaker.log"
+exec 2>&1
+
+echo "Start time: $(date) $(date +%s) running as ${$}, from ${PPID}, in ${HOME}, on $(hostname)"
+
+for dir in "${HOME}/usr/local/var/log" "${HOME}/usr/local/"{src,bin,lib,opt,tmp,etc,var};do
+	if [ ! -d "${dir}" ];then
+		mkdir -vp "${dir}"
+	fi
+done
+
+#
+#Setup paths and enviroment
+#
+OS=$(uname)
+ARCH=$(uname -m)
+HOST=$( hostname )
+export PATH="${HOME}/usr/local/bin:${HOME}/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:${PATH}"
+if [ -n "${OS}" ] && [ -n "${ARCH}" ] && [ -e "${HOME}/usr/bin.${OS}.${ARCH}" ]; then
+	PATH="${HOME}/usr/bin.${OS}.${ARCH}:${PATH}"
+	LD_LIBRARY_PATH="${HOME}/usr/local/lib.${OS}.${ARCH}:${HOME}/usr/lib/.${OS}.${ARCH}"
+	export OS ARCH HOST LD_LIBRARY_PATH PATH
+else
+	echo "ERROR: local binarch missing, looking for usr/bin.${OS}.${ARCH}:${PATH}" 
+fi
+if [ -d "${HOME}/usr/tmp" ]; then
+	export TMP="${HOME}/usr/tmp/"
+elif [ -d "/tmp" ]; then
+	export TMP="/tmp/"
+fi
+mkdir "${TMP}/.fsec"
+chmod 0700 "${TMP}/.fsec"
+
+for dir in "${HOME}/usr/local/include" "${HOME}/usr/local/lib" "${HOME}/usr/local/include";do
+	if [ ! -d "${dir}" ]; then
+		echo "Missing ${dir}, creating"
+		mkdir "${dir}"
+	fi
+done
+export TEMP="${TMP}"
+export TMPDIR="${TMP}"
+export TEMPDIR="${TMP}"
+export LANG=en_US.UTF-8
+export GDM_LANG=en_US.UTF-8
+export C_INCLUDE_PATH="${HOME}/usr/local/include"
+export LDFLAGS="-L${HOME}/usr/local/lib"
+export CFLAGS="-I${HOME}/usr/local/include"
+export LC_COLLATE="C"
+export HISTCONTROL=ignoredups
+umask 0077
+timeout 5s sanity.quick 
+timeout 5s local.paths.sh 
+
+#Setup X just how I like
+setxkbmap us -variant altgr-intl -option -option ctrl:nocaps  
+xset m 20/10 4
+xmodmap ~/.Xmodmap 
+if [ -e "${HOME}/.xbindkeysrc" ]; then
+	xbindkeys
+fi
+case "$(hostname)" in 
+	baymax)
+		xbacklight -set 30 
+		;;
+	eddie)
+		xbacklight -set xxi2530 
+		;;
+esac
+
+if command -v google-chrome-stable; then
+	export BROWSER="$( command -v google-chrome-stable )"
+	xdg-settings set default-web-browser google-chrome.desktop
+elif [ -x /opt/google/chrome/chrome ]; then
+	export BROWSER="/opt/google/chrome/chrome"
+elif command -v chromium; then
+	export BROWSER="$( command -v chromium )"
+	xdg-settings set default-web-browser chromium-browser.desktop 
+elif command -v firefox;then
+	export BROWSER="$( command -v firefox )"
+	xdg-settings set default-web-browser firefox.desktop
+else
+	echo "Unable to find browser"
+fi
+echo "Using browser $BROWSER"
+
+if command -v synclient; then
+	if synclient; then
+		synclient | grep CornerButton | awk '{system("synclient "$1"=0")}'
+	fi
+fi
+
+for d in SidusNare SolPrime;do
+	if [ -e "${HOME}/GDrive/${d}" ]; then
+		if ! grep "${HOME}/GDrive/${d}" /proc/mounts; then
+			google-drive-ocamlfuse -label "${d}" "${HOME}/GDrive/${d}"
+		fi
+	fi
+done
+
+#Start DJB Service Scan
+if [ -e "${HOME}/usr/local/var/log/svscan.log" ]; then
+	mv -fv "${HOME}/usr/local/var/log/svscan.log" "${HOME}/usr/local/var/log/svscan.last.log"
+fi
+
+do.svscan.sh  &>> "${HOME}/usr/local/var/log/svscan.log" &
+
+#Setup background
+"${HOME}/usr/bin/change-background.sh" &
+
+
+#Run location dependant settings
+"${HOME}/usr/bin/loc_settings" &>> "${HOME}/usr/local/var/log/loc.log" &
+
+if [ -x /home/fred4/usr/local/bin/repa.sh ]; then
+	/home/fred4/usr/local/bin/repa.sh &
+fi
+
+#Export the enviroment for other scripts to use
+se 
+echo -e "Debug:\n\tDisplay: ${DISPLAY}\n\tSSH_AGENT_PID ${SSH_AGENT_PID}\n\tSSH_AUTH_SOCK ${SSH_AUTH_SOCK}\n\tHOME ${HOME}\n\tPID $$\n\tpwd ${PWD}\n\tParent ${PPID}\n\tNOW $(date +%s)"
+echo "Startup done at $(date) $(date +%s)"  
+exit 0

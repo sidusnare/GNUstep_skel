@@ -1,0 +1,168 @@
+(
+  Applications,
+  (
+    Namshub,
+    (
+      ScreenShots,
+      (ScreenShot, SHORTCUT, Print, EXEC, snapshot.imagemagik.sh),
+      ("ScreenShot 10sec", EXEC, "snapshot.imagemagik.sh 10"),
+      ("ScreenShot 3sec", EXEC, "snapshot.imagemagik.sh 3"),
+      ("Quick Edit last screenshot", EXEC, snapshot.edit.sh)
+    ),
+    (
+      Background,
+      (Change, SHORTCUT, "Control+Sys_Req", EXEC, "change-background.sh"),
+      ("Link g", EXEC, "link_Pictures -g"),
+      ("Link a", EXEC, "link_Pictures -a"),
+      ("Link pg", EXEC, "link_Pictures -p -g "),
+      ("Link pga", EXEC, "link_Pictures -p -g -a "),
+      ("Link rpg", EXEC, "link_Pictures -r -p -g"),
+      ("Link rpga", EXEC, "link_Pictures -r -p -g -a "),
+      ("link rpgx", EXEC, "link_Pictures -r -p -g -x"),
+      ("link rx", EXEC, "link_Pictures -r -x "),
+      ("Link p", EXEC, "link_Pictures -p"),
+      ("Link r", EXEC, "link_Pictures -r"),
+      ("Link x", EXEC, "link_Pictures -x")
+    ),
+    (Services, OPEN_MENU, "|| wm.services.sh"),
+    (
+      Backup,
+      ("Full backup pull + sanity", EXEC, "xterm gbp"),
+      ("Backup pull", EXEC, "xterm backup.git.gpull"),
+      ("Backup push", EXEC, "xterm backup.git.gquick"),
+      ("Full backup push", EXEC, "xterm backup.git.gquick -f")
+    ),
+    (
+      Laptop,
+      ("WPA GUI", EXEC, "gksudo /usr/bin/wpa_gui"),
+      ("ACPI Load", EXEC, wmacpiload),
+      (ACPI, EXEC, wmacpi)
+    ),
+    ("L Lock", SHORTCUT, "Control+Mod1+Delete", EXEC, llock),
+    (Nvidia, EXEC, "nvidia-settings.sh"),
+    ("RnR Conf", EXEC, arandr),
+    (SleepNWake, EXEC, sleepnwake),
+    (Sleep, EXEC, compsleep)
+  ),
+  (
+    Infastructure,
+    ("virt-manager", EXEC, "virt-manager"),
+    ("Do Viewer", EXEC, do.viewer),
+    ("VM-Ware Horizon", EXEC, "vmware-view-wrapper"),
+    (
+      "AWS Workspaces Client",
+      EXEC,
+      "/opt/workspacesclient/workspacesclient"
+    ),
+    ("NetApp SystemManager", EXEC, SystemManager),
+    (
+      "HP IP Console Viewer",
+      EXEC,
+      "/home/fred4/usr/local/opt/hpip/IPViewer LAX_VM /home/fred4/usr/local/opt/sun-java/bin/java"
+    )
+  ),
+  (Terminal, EXEC, XTerm.run.sh),
+  (
+    Browsers,
+    (FireFox, EXEC, firefox),
+    (Chrome, EXEC, run_chrome.sh),
+    ("FireFox Profile", EXEC, "firefox --ProfileManager"),
+    (Tor, EXEC, "torbrowser-launcher"),
+    (Konqueror, EXEC, konqueror),
+    (Opera, EXEC, opera),
+    (Epiphany, EXEC, epiphany),
+    (
+      Safari,
+      SHEXEC,
+      "env WINEPREFIX=\"/home/fred4/.wine\" wine C:\\\\\\\\Program\\\\ Files\\\\ \\\\(x86\\\\)\\\\\\\\Safari\\\\\\\\Safari.exe"
+    ),
+    (
+      "Firefox Basic",
+      SHEXEC,
+      "firefox --no-remote --profile \"${HOME}/.mozilla/firefox/basic\""
+    ),
+    (Chromium, EXEC, run_chromium.sh)
+  ),
+  (
+    Comm,
+    (Slack, EXEC, slack),
+    (Zoom, EXEC, zoom),
+    (Element, EXEC, "element-desktop"),
+    (Discord, EXEC, discord),
+    (Pidgin, EXEC, pidgin),
+    (Skype, EXEC, skypeforlinux),
+    (ThunderBird, EXEC, thunderbird),
+    ("ThunderBird Profiles", EXEC, "thunderbird --ProfileManager"),
+    (HexChat, EXEC, hexchat)
+  ),
+  (
+    Media,
+    (Pithos, EXEC, pithos),
+    (VLC, EXEC, vlc),
+    (Xine, EXEC, xine),
+    (SMplayer, EXEC, smplayer),
+    ("Pulse Audio", EXEC, "pavucontrol-choose.sh"),
+    ("GQ View", EXEC, geeqie),
+    (Gwenview, EXEC, gwenview),
+    (GIMP, EXEC, "gimp --sync"),
+    (Audacity, EXEC, audacity),
+    (KDEnlive, EXEC, kdenlive)
+  ),
+  (
+    "File Managers",
+    (Konqueror, EXEC, "konqueror ~/"),
+    (Caja, EXEC, caja),
+    (Dolphin, EXEC, dolphin),
+    (Nemo, EXEC, nemo),
+    (Nautalis, EXEC, "nautilus -n"),
+    ("Gnome Commander", EXEC, "gnome-commander"),
+    (Krusader, EXEC, "krusader ")
+  ),
+  (
+    Apps,
+    (gVim, EXEC, gvim),
+    (gEdit, EXEC, gedit),
+    ("Libre Office", EXEC, libreoffice),
+    (Calculator, EXEC, "gnome-calculator"),
+    (VirtualBox, EXEC, VirtualBox)
+  ),
+  (
+    Games,
+    (Emulators, (mGBA, EXEC, "mgba-qt"), (ZSNES, EXEC, zsnes)),
+    ("Run Program", EXEC, scummvm),
+    (SecondLife, EXEC, secondlife),
+    (MineCraft, EXEC, ATMinecraft.sh),
+    (Steam, EXEC, steam),
+    (WoW, EXEC, wow)
+  ),
+  (
+    Session,
+    (
+      Commands,
+      ("Hide Others", HIDE_OTHERS),
+      ("Show All", SHOW_ALL),
+      ("Arrange Icons", ARRANGE_ICONS),
+      (Refresh, REFRESH),
+      (Lock, EXEC, "xlock -allowroot -usefirst")
+    ),
+    (Workspaces, WORKSPACE_MENU),
+    (
+      Info,
+      ("Info Panel", INFO_PANEL),
+      (Legal, LEGAL_PANEL),
+      ("System Console", EXEC, xconsole),
+      ("System Load", SHEXEC, "xosview || xload"),
+      ("Process List", EXEC, "xterm -e top"),
+      ("Manual Browser", EXEC, xman)
+    ),
+    ("WindowMaker Preferences", EXEC, WPrefs),
+    ("Restart Window Maker", SHORTCUT, XF86Launch2, RESTART),
+    (Synapse, SHORTCUT, "Mod4+space", EXEC, synapse),
+    ("GTK Apperance", EXEC, "gnome-tweaks"),
+    ("XScreenSaver preferences", EXEC, "xscreensaver-command -prefs"),
+    ("Save Session", SAVE_SESSION),
+    ("Clear Session", CLEAR_SESSION),
+    (Exit, EXIT)
+  ),
+  (Run..., SHORTCUT, "Mod1+F2", EXEC, "%A(Run,Type command to run:)")
+)

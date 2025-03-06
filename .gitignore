@@ -1,0 +1,7 @@
+Defaults/WMState
+Defaults/WMState.*
+Defaults/WMWindowAttributes
+Library/WindowMaker/CachedPixmaps/
+.AppInfo/WindowMaker/History
+Library/WindowMaker/.fonts_converted
+Library/WindowMaker/Screenshots

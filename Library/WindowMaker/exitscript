@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+exec > "${HOME}/usr/local/var/log/exit.log"
+exec 2>&1
+set -x
+
+killall -u fred4 -v ssh-agent
+
+echo "${DISPLAY}"
+if [ -e "${HOME}/usr/local/service" ]; then
+	cd "${HOME}/usr/local/service"
+	for i in *;do
+		if [ -d "${i}" ]; then
+			svc -d "${i}"
+		fi
+		if [ -d "${i}/log" ];then
+			svc -d "${i}/log"
+		fi
+	done
+	while pgrep -u "${EUID}" 'supervise|svscan';do
+		killall -v svscan supervise
+	done
+fi
+declare -i c=0
+while ps axfueww | grep "^${USER}" | grep "DISPLAY=${DISPLAY}";do
+	c="$(( c + 1 ))"
+	ps axfueww | grep "^${USER}" | grep "DISPLAY=${DISPLAY}" | awk '{system("kill "$2)}'
+	if [ "${c}" -gt 5 ]; then
+		ps axfueww | grep "^${USER}" | grep "DISPLAY=${DISPLAY}" | awk '{system("kill -9 "$2)}'
+	fi
+done
